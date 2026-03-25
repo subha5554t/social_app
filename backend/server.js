@@ -1,8 +1,3 @@
-// ==========================================
-// server.js — DB connection + server start
-// Express app logic lives in app.js for testability.
-// ==========================================
-
 const mongoose = require('mongoose');
 const dotenv   = require('dotenv');
 const app      = require('./app');
