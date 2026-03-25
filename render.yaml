@@ -1,0 +1,22 @@
+# render.yaml — Auto-deploy config for Render.com
+# Place this file in your repo ROOT (not inside backend/)
+# Render reads this to know how to build and run your backend.
+
+services:
+  - type: web
+    name: social-app-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        sync: false        # You fill this in Render dashboard
+      - key: JWT_SECRET
+        sync: false        # You fill this in Render dashboard
+      - key: CLIENT_URL
+        sync: false        # Set to your Vercel frontend URL

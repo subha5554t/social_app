@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SocialApp — Full Stack Solution Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@400;600;700;800&display=swap');
+
+  :root {
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --blue-dark: #1d4ed8;
+    --gold: #f59e0b;
+    --green: #22c55e;
+    --red: #ef4444;
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #273548;
+    --border: #334155;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --code-bg: #0d1117;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e293b 60%, #0f172a 100%);
+    padding: 60px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(37,99,235,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(245,158,11,0.08) 0%, transparent 50%);
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(37,99,235,0.2);
+    border: 1px solid rgba(37,99,235,0.4);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #93c5fd;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    background: linear-gradient(135deg, #fff 0%, #93c5fd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 1.05rem;
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto 28px;
+  }
+
+  .tech-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    position: relative;
+  }
+
+  .pill {
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid;
+  }
+
+  .pill-blue  { background: rgba(37,99,235,0.15);  border-color: rgba(37,99,235,0.4);  color: #93c5fd; }
+  .pill-green { background: rgba(34,197,94,0.12);  border-color: rgba(34,197,94,0.35); color: #86efac; }
+  .pill-gold  { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.35);color: #fcd34d; }
+  .pill-red   { background: rgba(239,68,68,0.12);  border-color: rgba(239,68,68,0.35); color: #fca5a5; }
+
+  /* Layout */
+  .container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+  /* Section */
+  .section { margin-bottom: 48px; }
+
+  .section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-title .icon {
+    width: 36px; height: 36px;
+    background: var(--blue);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  /* Grid */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+  @media (max-width: 700px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .card h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* File tree */
+  .file-tree {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 2;
+    overflow-x: auto;
+  }
+
+  .file-tree .dir  { color: #93c5fd; font-weight: 600; }
+  .file-tree .file { color: #e2e8f0; }
+  .file-tree .note { color: #64748b; }
+  .file-tree .indent { padding-left: 20px; display: block; }
+  .file-tree .indent2 { padding-left: 40px; display: block; }
+  .file-tree .indent3 { padding-left: 60px; display: block; }
+
+  /* Code block */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+  }
+
+  .code-dots { display: flex; gap: 6px; }
+  .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-red { background: #ef4444; }
+  .dot-yellow { background: #f59e0b; }
+  .dot-green { background: #22c55e; }
+
+  .code-block pre {
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    overflow-x: auto;
+    color: #e2e8f0;
+  }
+
+  .kw  { color: #c792ea; }   /* keywords */
+  .fn  { color: #82aaff; }   /* functions */
+  .str { color: #c3e88d; }   /* strings */
+  .cm  { color: #546e7a; font-style: italic; } /* comments */
+  .nu  { color: #f78c6c; }   /* numbers */
+  .cls { color: #ffcb6b; }   /* class names */
+
+  /* API table */
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(51,65,85,0.5);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .method { font-weight: 700; padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; }
+  .get    { background: rgba(34,197,94,0.15);  color: #86efac; }
+  .post   { background: rgba(37,99,235,0.15);  color: #93c5fd; }
+  .put    { background: rgba(245,158,11,0.15); color: #fcd34d; }
+  .delete { background: rgba(239,68,68,0.15);  color: #fca5a5; }
+
+  .auth-yes { color: #86efac; font-weight: 600; }
+  .auth-no  { color: #64748b; }
+
+  /* Steps */
+  .steps { display: flex; flex-direction: column; gap: 16px; }
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .step-num {
+    width: 32px; height: 32px;
+    background: var(--blue);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .step-content h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+  .step-content p  { font-size: 0.85rem; color: var(--muted); }
+  .step-content code {
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: #93c5fd;
+  }
+
+  /* Flow diagram */
+  .flow {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex-wrap: wrap;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    justify-content: center;
+    gap: 4px;
+  }
+  .flow-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+    min-width: 110px;
+  }
+  .flow-arrow { color: var(--muted); font-size: 1.2rem; padding: 0 4px; }
+
+  /* Feature list */
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .feature-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 0.875rem;
+  }
+  .feature-list li::before {
+    content: '✅';
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Env vars */
+  .env-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 2;
+  }
+  .env-key   { color: #f78c6c; }
+  .env-value { color: #c3e88d; }
+  .env-comment { color: #546e7a; }
+
+  /* Schema doc */
+  .schema-field {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(51,65,85,0.4);
+    font-size: 0.85rem;
+  }
+  .schema-field:last-child { border-bottom: none; }
+  .field-name { color: #82aaff; font-family: 'JetBrains Mono', monospace; font-weight: 600; min-width: 130px; }
+  .field-type { color: #ffcb6b; font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; min-width: 80px; }
+  .field-desc { color: var(--muted); font-size: 0.8rem; }
+  .field-req  { color: #fca5a5; font-size: 0.72rem; margin-left: auto; }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 32px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🏆 3W Full Stack Internship Assignment</div>
+  <h1>🌐 SocialApp — Complete Solution</h1>
+  <p>Production-ready Mini Social Post Application — React + Node.js + MongoDB</p>
+  <div class="tech-pills">
+    <span class="pill pill-blue">React.js 18</span>
+    <span class="pill pill-green">Node.js + Express</span>
+    <span class="pill pill-gold">MongoDB Atlas</span>
+    <span class="pill pill-red">JWT Auth</span>
+    <span class="pill pill-blue">Context API</span>
+    <span class="pill pill-green">Vercel + Render</span>
+    <span class="pill pill-gold">Optimistic UI</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- PROJECT STRUCTURE -->
+  <div class="section">
+    <div class="section-title"><div class="icon">📁</div> Project Structure</div>
+    <div class="file-tree">
+      <span class="dir">social-app/</span>
+      <span class="indent dir">backend/</span>
+        <span class="indent2 dir">controllers/</span>
+          <span class="indent3"><span class="file">authController.js</span>  <span class="note">← signup, login, getMe</span></span>
+          <span class="indent3"><span class="file">postController.js</span>  <span class="note">← create, feed, like, comment, delete</span></span>
+        <span class="indent2 dir">middleware/</span>
+          <span class="indent3"><span class="file">auth.js</span>            <span class="note">← JWT protect + generateToken</span></span>
+        <span class="indent2 dir">models/</span>
+          <span class="indent3"><span class="file">User.js</span>            <span class="note">← Mongoose schema + bcrypt hook</span></span>
+          <span class="indent3"><span class="file">Post.js</span>            <span class="note">← Schema with embedded comments</span></span>
+        <span class="indent2 dir">routes/</span>
+          <span class="indent3"><span class="file">auth.js</span>            <span class="note">← /api/auth/*</span></span>
+          <span class="indent3"><span class="file">posts.js</span>           <span class="note">← /api/posts/*</span></span>
+        <span class="indent2 file">.env.example</span>
+        <span class="indent2 file">package.json</span>
+        <span class="indent2 file">server.js             <span class="note">← Express entry point</span></span>
+      <span class="indent dir">frontend/src/</span>
+        <span class="indent2 dir">components/</span>
+          <span class="indent3"><span class="file">Navbar.js</span>          <span class="note">← Top navigation</span></span>
+          <span class="indent3"><span class="file">PostCard.js</span>        <span class="note">← Like + comment logic</span></span>
+        <span class="indent2 dir">context/</span>
+          <span class="indent3"><span class="file">AuthContext.js</span>     <span class="note">← Global auth state</span></span>
+        <span class="indent2 dir">pages/</span>
+          <span class="indent3"><span class="file">Feed.js</span>            <span class="note">← Paginated public feed</span></span>
+          <span class="indent3"><span class="file">Login.js</span>           <span class="note">← Login form</span></span>
+          <span class="indent3"><span class="file">Signup.js</span>          <span class="note">← Signup with validation</span></span>
+          <span class="indent3"><span class="file">CreatePost.js</span>      <span class="note">← Drag & drop image upload</span></span>
+        <span class="indent2 dir">services/</span>
+          <span class="indent3"><span class="file">api.js</span>             <span class="note">← All fetch() calls centralized</span></span>
+        <span class="indent2 file">App.js               <span class="note">← Router + protected routes</span></span>
+        <span class="indent2 file">App.css              <span class="note">← All styles (TaskPlanet-inspired)</span></span>
+      <span class="indent file">README.md</span>
+    </div>
+  </div>
+
+  <!-- AUTH FLOW -->
+  <div class="section">
+    <div class="section-title"><div class="icon">🔐</div> Authentication Flow</div>
+    <div class="flow">
+      <div class="flow-box">User Fills Form</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">POST /api/auth/signup</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">bcrypt hashes password</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Save to MongoDB</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Return JWT</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Store in localStorage</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box">Redirect to Feed ✅</div>
+    </div>
+    <div style="margin-top: 12px; font-size: 0.82rem; color: var(--muted); text-align: center;">
+      On every protected request → JWT sent in <code style="color:#93c5fd; background:var(--surface2); padding:2px 6px; border-radius:4px; font-family:monospace;">Authorization: Bearer &lt;token&gt;</code> header → middleware verifies → attaches user to req
+    </div>
+  </div>
+
+  <!-- DATABASE SCHEMA -->
+  <div class="section">
+    <div class="section-title"><div class="icon">🗄️</div> Database Schema (2 Collections)</div>
+    <div class="grid-2">
+      <!-- Users -->
+      <div class="card">
+        <h3>👤 Users Collection</h3>
+        <div class="schema-field">
+          <span class="field-name">username</span>
+          <span class="field-type">String</span>
+          <span class="field-desc">Unique handle</span>
+          <span class="field-req">required</span>
+        </div>
+        <div class="schema-field">
+          <span class="field-name">email</span>
+          <span class="field-type">String</span>
+          <span class="field-desc">Unique, lowercase</span>
+          <span class="field-req">required</span>
+        </div>
+        <div class="schema-field">
+          <span class="field-name">password</span>
+          <span class="field-type">String</span>
+          <span class="field-desc">bcrypt hashed</span>
+          <span class="field-req">required</span>
+        </div>
+        <div class="schema-field">
+          <span class="field-name">avatar</span>
+          <span class="field-type">String</span>
+          <span class="field-desc">URL or base64</span>
+        </div>
+        <div class="schema-field">
+          <span class="field-name">bio</span>
+          <span class="field-type">String</span>
+          <span class="field-desc">Max 150 chars</span>
+        </div>
+        <div class="schema-field">
+          <span class="field-name">createdAt</span>
+          <span class="field-type">Date</span>
+          <span class="field-desc">Auto timestamp</span>
+        </div>
+      </div>
+      <!-- Posts -->
+      <div class="card">
+        <h3>📝 Posts Collection</h3>
+        <div class="schema-field">
+          <span class="field-name">author</span>
+          <span class="field-type">ObjectId</span>
+          <span class="field-desc">Ref → User</span>
+          <span class="field-req">required</span>
+        </div>
+        <div class="schema-field">
+          <span class="field-name">username</span>
+          <span class="field-type">String</span>
+          <span class="field-desc">Denormalized (fast reads)</span>
+        </div>
+        <div class="schema-field">
+          <span class="field-name">text</span>
+          <span class="field-type">String</span>
+          <span class="field-desc">Max 1000 chars</span>
+        </div>
+        <div class="schema-field">
+          <span class="field-name">image</span>
+          <span class="field-type">String</span>
+          <span class="field-desc">base64 or URL</span>
+        </div>
+        <div class="schema-field">
+          <span class="field-name">likes</span>
+          <span class="field-type">ObjectId[]</span>
+          <span class="field-desc">Array of user IDs</span>
+        </div>
+        <div class="schema-field">
+          <span class="field-name">comments</span>
+          <span class="field-type">Array</span>
+          <span class="field-desc">Embedded sub-docs</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API REFERENCE -->
+  <div class="section">
+    <div class="section-title"><div class="icon">🌐</div> API Endpoints</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots">
+          <div class="code-dot dot-red"></div>
+          <div class="code-dot dot-yellow"></div>
+          <div class="code-dot dot-green"></div>
+        </div>
+        <span>REST API — Base URL: /api</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Endpoint</th>
+            <th>Auth</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="method post">POST</span></td>
+            <td>/auth/signup</td>
+            <td class="auth-no">—</td>
+            <td style="color:var(--muted); font-family:sans-serif;">Register new user</td>
+          </tr>
+          <tr>
+            <td><span class="method post">POST</span></td>
+            <td>/auth/login</td>
+            <td class="auth-no">—</td>
+            <td style="color:var(--muted); font-family:sans-serif;">Login, receive JWT</td>
+          </tr>
+          <tr>
+            <td><span class="method get">GET</span></td>
+            <td>/auth/me</td>
+            <td class="auth-yes">JWT ✅</td>
+            <td style="color:var(--muted); font-family:sans-serif;">Get current user profile</td>
+          </tr>
+          <tr>
+            <td><span class="method get">GET</span></td>
+            <td>/posts?page=1&limit=10</td>
+            <td class="auth-no">—</td>
+            <td style="color:var(--muted); font-family:sans-serif;">Public paginated feed</td>
+          </tr>
+          <tr>
+            <td><span class="method post">POST</span></td>
+            <td>/posts</td>
+            <td class="auth-yes">JWT ✅</td>
+            <td style="color:var(--muted); font-family:sans-serif;">Create post (text/image)</td>
+          </tr>
+          <tr>
+            <td><span class="method put">PUT</span></td>
+            <td>/posts/:id/like</td>
+            <td class="auth-yes">JWT ✅</td>
+            <td style="color:var(--muted); font-family:sans-serif;">Toggle like on post</td>
+          </tr>
+          <tr>
+            <td><span class="method post">POST</span></td>
+            <td>/posts/:id/comment</td>
+            <td class="auth-yes">JWT ✅</td>
+            <td style="color:var(--muted); font-family:sans-serif;">Add comment to post</td>
+          </tr>
+          <tr>
+            <td><span class="method delete">DELETE</span></td>
+            <td>/posts/:id</td>
+            <td class="auth-yes">JWT ✅</td>
+            <td style="color:var(--muted); font-family:sans-serif;">Delete own post</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- OPTIMISTIC UI -->
+  <div class="section">
+    <div class="section-title"><div class="icon">⚡</div> Optimistic UI — How It Works</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>❤️ Like Toggle</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>User clicks Like</h4>
+              <p>Heart fills <em>immediately</em>. Count increments in local state. Zero waiting.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>API call fires in background</h4>
+              <p><code>PUT /posts/:id/like</code> sent asynchronously.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Sync with server</h4>
+              <p>On success → replace with server's likes array. On failure → <strong>revert</strong> to original state.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>💬 Comment</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>User submits comment</h4>
+              <p>Comment appears <em>instantly</em> in the list with a temporary ID.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>API call in background</h4>
+              <p><code>POST /posts/:id/comment</code> sent. Input clears immediately.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Replace temp with real</h4>
+              <p>Server returns real comment → temp ID replaced. On failure → comment removed, text restored.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPLOYMENT -->
+  <div class="section">
+    <div class="section-title"><div class="icon">🚀</div> Deployment Guide</div>
+    <div class="grid-3">
+      <div class="card">
+        <h3>🟡 MongoDB Atlas</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num" style="background:#f59e0b">1</div>
+            <div class="step-content"><h4>Create free cluster</h4><p>mongodb.com/cloud/atlas</p></div></div>
+          <div class="step"><div class="step-num" style="background:#f59e0b">2</div>
+            <div class="step-content"><h4>Add DB user</h4><p>Read/write permissions</p></div></div>
+          <div class="step"><div class="step-num" style="background:#f59e0b">3</div>
+            <div class="step-content"><h4>Whitelist IPs</h4><p>Allow <code>0.0.0.0/0</code></p></div></div>
+          <div class="step"><div class="step-num" style="background:#f59e0b">4</div>
+            <div class="step-content"><h4>Copy URI</h4><p>Paste as <code>MONGO_URI</code></p></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>🟢 Backend → Render</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num" style="background:#22c55e">1</div>
+            <div class="step-content"><h4>Push to GitHub</h4><p>Public repo required</p></div></div>
+          <div class="step"><div class="step-num" style="background:#22c55e">2</div>
+            <div class="step-content"><h4>New Web Service</h4><p>Root dir: <code>backend/</code></p></div></div>
+          <div class="step"><div class="step-num" style="background:#22c55e">3</div>
+            <div class="step-content"><h4>Build & Start</h4><p><code>npm install</code> / <code>npm start</code></p></div></div>
+          <div class="step"><div class="step-num" style="background:#22c55e">4</div>
+            <div class="step-content"><h4>Add env vars</h4><p>MONGO_URI, JWT_SECRET, CLIENT_URL</p></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>🔵 Frontend → Vercel</h3>
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div>
+            <div class="step-content"><h4>Import repo</h4><p>vercel.com → New Project</p></div></div>
+          <div class="step"><div class="step-num">2</div>
+            <div class="step-content"><h4>Set root dir</h4><p><code>frontend/</code></p></div></div>
+          <div class="step"><div class="step-num">3</div>
+            <div class="step-content"><h4>Add env var</h4><p><code>REACT_APP_API_URL</code> = Render URL</p></div></div>
+          <div class="step"><div class="step-num">4</div>
+            <div class="step-content"><h4>Deploy!</h4><p>Auto-builds on every push 🎉</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENV vars -->
+    <div style="margin-top: 20px;">
+      <div style="font-size:0.85rem; font-weight:700; color:var(--muted); margin-bottom:8px;">backend/.env</div>
+      <div class="env-block">
+        <div><span class="env-comment"># MongoDB connection string</span></div>
+        <div><span class="env-key">MONGO_URI</span>=<span class="env-value">mongodb+srv://user:<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="54243527271437382127203126647a2c2c2c2c2c7a393b3a333b30367a3a3120">[email&#160;protected]</a>/socialapp</span></div>
+        <div><span class="env-key">JWT_SECRET</span>=<span class="env-value">replace_with_long_random_secret_min_32_chars</span></div>
+        <div><span class="env-key">PORT</span>=<span class="env-value">5000</span></div>
+        <div><span class="env-key">CLIENT_URL</span>=<span class="env-value">https://your-app.vercel.app</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BONUS FEATURES -->
+  <div class="section">
+    <div class="section-title"><div class="icon">⭐</div> Bonus Features Implemented</div>
+    <div class="grid-2">
+      <div class="card">
+        <ul class="feature-list">
+          <li>Pagination with "Load More" button (<code>?page&limit</code>)</li>
+          <li>Optimistic UI updates — zero perceived lag</li>
+          <li>Skeleton shimmer loading cards</li>
+          <li>Drag & drop image upload in CreatePost</li>
+          <li>Base64 image preview before posting</li>
+        </ul>
+      </div>
+      <div class="card">
+        <ul class="feature-list">
+          <li>Character limit counter on textarea</li>
+          <li>Relative timestamps (5m ago, 2h ago)</li>
+          <li>Delete own posts with confirmation</li>
+          <li>JWT token verification on page load (auto-login)</li>
+          <li>Clean error UX with retry buttons</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK SETUP -->
+  <div class="section">
+    <div class="section-title"><div class="icon">⚙️</div> Quick Local Setup</div>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-dots">
+          <div class="code-dot dot-red"></div>
+          <div class="code-dot dot-yellow"></div>
+          <div class="code-dot dot-green"></div>
+        </div>
+        <span>bash — Terminal</span>
+      </div>
+      <pre><span class="cm"># 1. Clone repo</span>
+git clone https://github.com/yourusername/social-app.git
+cd social-app
+
+<span class="cm"># 2. Backend setup</span>
+cd backend
+npm install
+cp .env.example .env   <span class="cm"># then edit .env with your values</span>
+npm run dev            <span class="cm"># → http://localhost:5000</span>
+
+<span class="cm"># 3. Frontend setup (new terminal)</span>
+cd ../frontend
+npm install
+<span class="cm"># Create frontend/.env:</span>
+echo <span class="str">"REACT_APP_API_URL=http://localhost:5000/api"</span> > .env
+npm start              <span class="cm"># → http://localhost:3000 🎉</span></pre>
+    </div>
+  </div>
+
+</div>
+
+<div class="
