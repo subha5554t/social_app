@@ -6,17 +6,25 @@ dotenv.config();
 
 const app = express();
 
-// Allow localhost (dev) + Vercel URL (production)
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:3001',
-  process.env.CLIENT_URL,
-].filter(Boolean);
-
 app.use(cors({
   origin: (origin, callback) => {
+    // Allow no origin (Postman, curl)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    // Allow localhost (development)
+    if (origin.includes('localhost')) return callback(null, true);
+
+    // Allow ANY vercel.app subdomain
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+
+    // Allow ANY onrender.com subdomain
+    if (origin.endsWith('.onrender.com')) return callback(null, true);
+
+    // Allow custom domain from env variable
+    if (process.env.CLIENT_URL && origin === process.env.CLIENT_URL) {
+      return callback(null, true);
+    }
+
     callback(new Error(`CORS blocked: ${origin}`));
   },
   credentials: true,
